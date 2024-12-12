@@ -8,7 +8,7 @@
             </div>
         </div>
         <hr class="my-4">
-        <PostDetailView></PostDetailView>
+        <PostDetailView id="1"></PostDetailView>
     </div>
 </template>
 
