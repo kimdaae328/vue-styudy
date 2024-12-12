@@ -8,21 +8,30 @@
             </div>
         </div>
         <hr class="my-4">
-        <PostDetailView id="1"></PostDetailView>
+        <AppCard>
+            <PostDetailView :id="1"></PostDetailView>
+        </AppCard>
     </div>
 </template>
 
 <script setup>
 import PostItem from '@/components/posts/PostItem.vue';
 import PostDetailView from '@/views/posts/PostDetailView.vue'
+import AppCard from '../../components/AppCard.vue';
 import { getPosts } from '@/api/posts';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 
 const router = useRouter();
 const posts = ref([]);
-const fetchPosts = () => {
-    posts.value = getPosts();
+const fetchPosts = async () => {
+    const response = await fetPosts();
+    console.dir(response)
+    // getPosts().then(response => {
+    //     console.log('response:', response);
+    // }).catch(error => {
+    //     console.log('error:', error);
+    // })
 }
 fetchPosts();
 const goPage = id => {
