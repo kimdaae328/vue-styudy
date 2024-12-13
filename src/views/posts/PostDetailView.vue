@@ -19,7 +19,7 @@
                 <button class="btn btn-outline-primary" @click="goEditPage">수정</button>
             </div>
             <div class="col-auto">
-                <button class="btn btn-outline-danger">삭제</button>
+                <button class="btn btn-outline-danger" @click="remove">삭제</button>
             </div>
         </div>
         <!-- {{$route.params.id}} -->
@@ -61,6 +61,14 @@ const setPost = ({title, content, createdAt}) => {
 //     post.value.createAt = createAt;
 // }
 fetchPost();
+const remove = async () => {
+    try {
+        await deletePost(props.id);
+        router.push({name:'PostList'})
+    } catch (error) {
+        console.error(error)
+    }
+}
 const goListPage = () => router.push({name: 'PostList'});
 const goEditPage = () => router.push({name: 'PostEdit', params: {id: props.id}});
 

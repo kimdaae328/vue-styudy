@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
 import { ref } from 'vue';
+import { useRoute, useRouter } from "vue-router";
 import { getPostById, updatePost } from '@/api/posts'
 
 const route = useRoute();
