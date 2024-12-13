@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h2>{{form.title}}</h2>
-        <p>{{form.content}}</p>
-        <p class="text-muted">{{form.createdAt}}</p>        
+        <h2>{{post.title}}</h2>
+        <p>{{post.content}}</p>
+        <p class="text-muted">{{post.createdAt}}</p>        
         <hr class="my-4"/>
         <div class="row">
             <div class="col-auto">
@@ -27,9 +27,9 @@
 </template>
 
 <script setup>
-import {useRouter} from 'vue-router';
-import {getPostById} from '@/api/posts';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { getPostById } from '@/api/posts';
 
 const props = defineProps({
     id: Number,
@@ -37,7 +37,8 @@ const props = defineProps({
 
 const router = useRouter();
 // const id = route.params.id;
-const form = ref({});
+const id = props.id;
+const post = ref({});
 // ref
 // 장) 객체 할당 가능, 일관성
 // 단) form.value.title, form.value.content
@@ -46,10 +47,17 @@ const form = ref({});
 // 단) 객체 할당 불가능
 // 장) form.title, form.content
  
-const fetchPost = () => {
-    const data = getPostById(props.id);
-    form.value = {...data};
-}
+const fetchPost = async() => {
+    const {data} = await getPostById(props.id);
+    // setPost(data);
+    post.value = {...data};
+    console.log('props.id', props.id);
+};
+// const setPost = ({title, content,createAt}) => {
+//     post.value.title = title;
+//     post.value.content = content;
+//     post.value.createAt = createAt;
+// }
 fetchPost();
 const goListPage = () => router.push({name: 'PostList'});
 const goEditPage = () => router.push({name: 'PostEdit', params: {id: props.id}});

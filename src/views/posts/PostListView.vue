@@ -25,8 +25,12 @@ import { useRouter } from 'vue-router'
 const router = useRouter();
 const posts = ref([]);
 const fetchPosts = async () => {
-    const response = await fetPosts();
-    console.dir(response)
+    try {
+        const {data} = await getPosts();
+        posts.value = data;
+    } catch (error){
+        console.error(error)
+    }
     // getPosts().then(response => {
     //     console.log('response:', response);
     // }).catch(error => {
