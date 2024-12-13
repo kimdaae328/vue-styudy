@@ -37,7 +37,6 @@ const props = defineProps({
 
 const router = useRouter();
 // const id = route.params.id;
-const id = props.id;
 const post = ref({});
 // ref
 // 장) 객체 할당 가능, 일관성
@@ -49,10 +48,13 @@ const post = ref({});
  
 const fetchPost = async() => {
     const {data} = await getPostById(props.id);
-    // setPost(data);
-    post.value = {...data};
-    console.log('props.id', props.id);
+    setPost(data)
 };
+const setPost = ({title, content, createdAt}) => {
+    post.value.title = title;
+    post.value.content = content;
+    post.value.createdAt = createdAt;
+}
 // const setPost = ({title, content,createAt}) => {
 //     post.value.title = title;
 //     post.value.content = content;
