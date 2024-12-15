@@ -7,7 +7,24 @@
                 <PostItem :title="post.title" :content="post.content" :created-at="post.createdAt" @click="goPage(post.id)"></PostItem>
             </div>
         </div>
-        <hr class="my-4" />
+        <nav class="mt-5" aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <hr class="my-5" />
         <AppCard>
             <PostDetailView :id="1"></PostDetailView>
         </AppCard>
@@ -27,13 +44,18 @@
     const params = ref({
         _sort: 'createdAt',
         _order: 'desc',
+        _limit: 3,
     });
+    //page-ination
+    const totalCount = ref(0);
+
     const fetchPosts = async () => {
         try {
-            console.log('요청 파라미터:', params.value);
-            const { data } = await getPosts(params.value);
-            console.log('받은 데이터:', data);
+            // console.log('요청 파라미터:', params.value);
+            const { data, headers } = await getPosts(params.value);
+            // console.log('받은 데이터:', data);
             posts.value = data;
+            totalCount.value = headers['x-total-count'];
         } catch (error) {
             console.error(error);
         }
