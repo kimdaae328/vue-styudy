@@ -9,16 +9,16 @@
         </div>
         <nav class="mt-5" aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
+                <li class="page-item" :class="{ disabled: !(params._page > 1) }">
+                    <a class="page-link" href="#" aria-label="Previous" @click.prevent="--params._page">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+                <li v-for="page in pageCount" :key="page" class="page-item" :class="{ active: params._page === page }">
+                    <a class="page-link" href="#" @click.prevent="(params._page = page)">{{ page }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: !(params._page < pageCount) }">
+                    <a class="page-link" href="#" aria-label="Next" @click.prevent="++params._page">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -36,7 +36,7 @@
     import PostDetailView from '@/views/posts/PostDetailView.vue';
     import AppCard from '../../components/AppCard.vue';
     import { getPosts } from '@/api/posts';
-    import { ref } from 'vue';
+    import { computed, ref, watchEffect } from 'vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -44,10 +44,12 @@
     const params = ref({
         _sort: 'createdAt',
         _order: 'desc',
+        _page: 1,
         _limit: 3,
     });
     //page-ination
     const totalCount = ref(0);
+    const pageCount = computed(() => Math.ceil(totalCount.value / params.value._limit));
 
     const fetchPosts = async () => {
         try {
@@ -60,7 +62,8 @@
             console.error(error);
         }
     };
-    fetchPosts();
+    watchEffect(fetchPosts); //콜백함수 안에서 반응형 함수 실행되는거 반영해줌
+
     const goPage = id => {
         // router.push(`/posts/${id}`);
         router.push({
