@@ -2,10 +2,13 @@
     <div>
         <h2>게시글 등록</h2>
         <hr class="my-4">
+        <PostForm v-model:title="form.title" v-model:content="form.content" @submit.prevent="save">
+            <template #actions></template>
+        </PostForm>
         <form @submit.prevent="save">
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
-                <input v-model="form.title" type="text" class="form-control" id="title">
+                <input v-mode="form.title" type="text" class="form-control" id="title">
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">내용</label>
@@ -23,6 +26,7 @@
 import { useRoute, useRouter } from "vue-router"
 import { ref } from 'vue';
 import { createPost } from '@/api/posts'
+import PostForm from "@/components/posts/PostForm.vue";
 
 const router = useRouter();
 const form = ref({
