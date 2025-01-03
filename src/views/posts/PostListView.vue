@@ -5,12 +5,32 @@
         <PostFilter v-model:title="params.title_like" v-model:limit.number="params._limit" />
         <hr class="my-4" />
         <AppGrid :items="posts">
-            <template v-slot="{item}">
-                <PostItem :title="item.title" :content="item.content" :created-at="item.createdAt" @click="goPage(item.id)"></PostItem>
+            <template v-slot="{ item }">
+                <PostItem
+                    :title="item.title"
+                    :content="item.content"
+                    :created-at="item.createdAt"
+                    @click="goPage(item.id)"
+                    @modal="openModal(item)"
+                ></PostItem>
             </template>
         </AppGrid>
         <AppPagination :current-page="params._page" :page-count="pageCount" @page="handlePageChange" />
-        <AppModal></AppModal>
+        <AppModal :show="show" title="게시글" @close="closeModal">
+            <template #default>
+                <div class="row g-3">
+                    <div class="col-3 text-muted">제목</div>
+                    <div class="col-9">{{ modalTitle }}</div>
+                    <div class="col-3 text-muted">내용</div>
+                    <div class="col-9">{{ modalContent }}</div>
+                    <div class="col-3 text-muted">등록일</div>
+                    <div class="col-9">{{ modalCreateAt }}</div>
+                </div>
+            </template>
+            <template #actions>
+                <button type="button" class="btn btn-secondary" @click="closeModal">닫기</button>
+            </template>
+        </AppModal>
 
         <template v-if="posts && posts.length > 0">
             <hr class="my-5" />
@@ -60,7 +80,7 @@
     watchEffect(fetchPosts); //콜백함수 안에서 반응형 함수 실행되는거 반영해줌
 
     // Handle page change with 숫자 타입 보장
-    const handlePageChange = (page) => {
+    const handlePageChange = page => {
         params.value._page = Number(page);
     };
 
@@ -72,6 +92,19 @@
                 id,
             },
         });
+    };
+    const show = ref(false);
+    const modalTitle = ref('');
+    const modalContent = ref('');
+    const modalCreateAt = ref('');
+    const openModal = ({ title, content, createdAt }) => {
+        show.value = true;
+        modalTitle.value = title;
+        modalContent.value = content;
+        modalCreateAt.value = createdAt;
+    };
+    const closeModal = () => {
+        show.value = false;
     };
 </script>
 
