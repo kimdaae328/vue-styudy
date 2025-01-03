@@ -8,7 +8,7 @@
                 <button type="button" class="btn btn-primary" @click="edit">수정</button>
             </template>
         </PostForm>
-        <AppAlert :show="showAlert" :message="alertMessage" :type="alertType" />
+        <AppAlert :items="alerts" />
     </div>
 </template>
 
@@ -23,24 +23,24 @@
     const router = useRouter();
     const id = route.params.id;
 
+    // 'form' 객체를 정의하고 초기화
     const form = ref({
-        title: null,
-        content: null,
+        title: '',
+        content: ''
     });
+
+    const post = ref({});
+
+    // 게시글 데이터를 가져오는 함수
     const fetchPost = async () => {
-        try {
-            const { data } = await getPostById(id);
-            setForm(data);
-        } catch (error){
-            console.error(error);
-            vAlert('네트워크 오류!');
-        };
-    }
-    const setForm = ({ title, content }) => {
-        form.value.title = title;
-        form.value.content = content;
+    const { data } = await getPostById(id);
+        post.value = { ...data };
     };
+
+    // 게시글 데이터를 가져옴
     fetchPost();
+
+    // 게시글을 수정하는 함수
     const edit = async () => {
         try {
             await updatePost(id, { ...form.value });
@@ -48,22 +48,20 @@
             vAlert('수정이 완료되었습니다!!!', 'success');
         } catch (error){
             console.error(error);
+            vAlert(error.message, 'error');
         }
     };
 
+    // 취소 버튼 클릭 시 상세 페이지로 이동하는 함수
     const goDetailPage = () => router.push({ name: 'PostDetail', params: { id } });
 
-    // alert
-    const showAlert = ref(false);
-    const alertMessage = ref('');
-    const alertType = ref('error');
-    const vAlert = (message, type = 'error') => {
-        showAlert.value = true;
-        alertMessage.value = message;
-        alertType.value = type;
-        setTimeout(() => {
-            showAlert.value = false;
-        }, 2000)
+    // 알림 메시지를 관리하는 'alerts' 객체
+    const alerts = ref([]);
+
+    // 알림을 추가하는 함수
+    const vAlert = (message, type = 'success') => {
+        alerts.value.push({ type, message });
+        setTimeout(() => alerts.value.shift(), 3000);
     }
 </script>
 
