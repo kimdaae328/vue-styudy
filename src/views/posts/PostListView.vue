@@ -10,6 +10,8 @@
             </template>
         </AppGrid>
         <AppPagination :current-page="params._page" :page-count="pageCount" @page="handlePageChange" />
+        <AppModal></AppModal>
+
         <template v-if="posts && posts.length > 0">
             <hr class="my-5" />
             <AppCard>
@@ -29,6 +31,7 @@
     import AppCard from '@/components/AppCard.vue';
     import AppPagination from '@/components/AppPagination.vue';
     import AppGrid from '@/components/AppGrid.vue';
+    import AppModal from '@/components/AppModal.vue';
 
     const router = useRouter();
     const posts = ref([]);
